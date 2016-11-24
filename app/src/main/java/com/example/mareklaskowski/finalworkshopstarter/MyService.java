@@ -25,7 +25,7 @@ public class MyService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         //show a notification when the service starts
-        Notification.Builder mBuilder = new Notification.Builder(this).setSmallIcon(null)
+        Notification.Builder mBuilder = new Notification.Builder(this).setSmallIcon(R.drawable.ic_stat_name)
                 .setContentTitle("Service was started").setContentText("This is the body text blah blah blah");
         //create an implicit Intent that will be broadcast when the user clicks on the Notification
         Intent notificationIntent = new Intent("com.example.marek.NOTIFICATION_CLICKED");
