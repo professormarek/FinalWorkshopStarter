@@ -16,7 +16,7 @@ public class MainActivity extends AppCompatActivity {
         Button startButton = (Button)findViewById(R.id.button_start);
         startButton.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
-                startService();
+                startMyService();
             }
 
         });
@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
     /*
     starts our service
      */
-    void startService(){
+    void startMyService(){
         //explicit intent to start the MyService
         Intent intent = new Intent(this, MyService.class);
         //start the service by calling Context.startService()
@@ -46,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
      */
     void stopMyService(){
         Intent intent = new Intent(this, MyService.class);
+        //Context.stopService()
         stopService(intent);
     }
 }
