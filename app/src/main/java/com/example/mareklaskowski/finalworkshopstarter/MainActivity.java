@@ -21,6 +21,14 @@ public class MainActivity extends AppCompatActivity {
 
         });
 
+        Button stopButton = (Button)findViewById(R.id.button_stop);
+        stopButton.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v){
+                stopMyService();
+            }
+
+        });
+
     }
 
     /*
@@ -31,5 +39,13 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, MyService.class);
         //start the service by calling Context.startService()
         startService(intent);
+    }
+
+    /*
+    stops our service
+     */
+    void stopMyService(){
+        Intent intent = new Intent(this, MyService.class);
+        stopService(intent);
     }
 }
