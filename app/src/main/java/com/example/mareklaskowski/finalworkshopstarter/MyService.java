@@ -1,20 +1,30 @@
 package com.example.mareklaskowski.finalworkshopstarter;
 
+import android.Manifest;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.widget.Toast;
 
 public class MyService extends Service {
     int notificationCount;
+
+    //in order to recieve location updates, you need an instance of LocationListener
+    LocationListener locationListener;
     /*
     AVOID CALLING ANY Android APIs from here ex. Context.whatever
      */
     public MyService() {
+        locationListener = null;
         notificationCount = 1;
     }
 
@@ -38,6 +48,40 @@ public class MyService extends Service {
         //notify the user (fire off the notification)
         notificationManager.notify(notificationCount++, mBuilder.build());
 
+        /**
+         * get location updates from the network or GPS
+         */
+
+        int permissionState = checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION);
+        if(permissionState == PackageManager.PERMISSION_GRANTED) {
+            //start by setting up locationListener
+            locationListener = new LocationListener() {
+                @Override
+                public void onLocationChanged(Location location) {
+                    //call a method in our service to handle the new location
+                    updateLocation(location);
+                }
+                @Override
+                public void onStatusChanged(String s, int i, Bundle bundle) {
+                    //TODO: notify the user of provider status change
+                }
+                @Override
+                public void onProviderEnabled(String s) {
+                    //TODO: notify the user of provider status change
+                }
+                @Override
+                public void onProviderDisabled(String s) {
+                    //TODO: notify the user of provider status change
+                }
+            };
+            LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            //request updates from locationManager
+            //arguments are: location provider, update interval in ms, minimum distance (meters), a LocationListener
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 0, locationListener);
+
+
+        }
+
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -59,5 +103,10 @@ public class MyService extends Service {
     public IBinder onBind(Intent intent) {
         // TODO: Return the communication channel to the service.
         throw new UnsupportedOperationException("Not yet implemented");
+    }
+
+    void updateLocation(Location location){
+        //do something with the location
+        System.out.println("Recieved location update: " + location.getLatitude() + " " + location.getLongitude());
     }
 }
