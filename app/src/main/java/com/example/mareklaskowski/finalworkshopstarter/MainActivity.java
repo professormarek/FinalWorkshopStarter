@@ -1,9 +1,11 @@
 package com.example.mareklaskowski.finalworkshopstarter;
 
+import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -73,10 +75,22 @@ public class MainActivity extends AppCompatActivity {
     starts our service
      */
     void startMyService(){
-        //explicit intent to start the MyService
-        Intent intent = new Intent(this, MyService.class);
-        //start the service by calling Context.startService()
-        startService(intent);
+        /**
+         * before starting the service, make sure we have permission to get the location.
+           another option might be to request permission within the service itself
+         **/
+        int permissionState = checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION);
+        if(permissionState != PackageManager.PERMISSION_GRANTED){
+            //note: the arguments are an array of permissions, and a request code
+            System.out.println("We don't have ACCESS_FINE_LOCATION permission, requesting permission...");
+            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1234);
+        } else {
+            System.out.println("We have ACCESS_FINE_LOCATION permission, starting service...");
+            //explicit intent to start the MyService
+            Intent intent = new Intent(this, MyService.class);
+            //start the service by calling Context.startService()
+            startService(intent);
+        }
     }
 
     /*
